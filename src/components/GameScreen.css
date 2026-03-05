@@ -21,6 +21,32 @@
   align-items: center;
 }
 
+.header-right {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.connection-status-game {
+  padding: 6px 14px;
+  border-radius: 20px;
+  background: rgba(255, 248, 220, 0.15);
+  border: 1px solid rgba(255, 248, 220, 0.25);
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+.connection-status-game .status-connected {
+  color: #4ADE80;
+  text-shadow: 0 0 8px rgba(74, 222, 128, 0.3);
+}
+
+.connection-status-game .status-disconnected {
+  color: #F87171;
+  text-shadow: 0 0 8px rgba(248, 113, 113, 0.3);
+  animation: pulse 2s ease-in-out infinite;
+}
+
 .game-header h1 {
   margin: 0;
   font-size: 1.75rem;
@@ -550,6 +576,28 @@
     padding: 20px;
     gap: 20px;
   }
+
+  .header-right {
+    gap: 8px;
+  }
+
+  .connection-status-game {
+    padding: 4px 10px;
+    font-size: 0.75rem;
+  }
+
+  .user-info {
+    padding: 6px 12px;
+  }
+
+  .user-info .participant-avatar {
+    width: 36px;
+    height: 36px;
+  }
+
+  .user-name {
+    font-size: 0.9rem;
+  }
   
   .voting-buttons {
     grid-template-columns: repeat(auto-fit, minmax(70px, 1fr));
@@ -569,4 +617,9 @@
   .control-button {
     width: 100%;
   }
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
 }

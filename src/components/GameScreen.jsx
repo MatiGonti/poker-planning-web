@@ -4,7 +4,8 @@ import './GameScreen.css';
 const VOTING_OPTIONS = ['0.5', '1', '1.5', '2', '2.5', '3', '3.5', '4', '5', '7', '8', '10', '20', '?'];
 
 function GameScreen({ 
-  socket, 
+  socket,
+  socketConnected,
   currentUser,
   participants, 
   currentTask, 
@@ -110,9 +111,18 @@ function GameScreen({
       <header className="game-header">
         <div className="header-content">
           <h1>⚔️ Poker Planning</h1>
-          <div className="user-info">
-            {renderAvatar(currentUser.avatar, currentUser.name)}
-            <span className="user-name">{currentUser.name}</span>
+          <div className="header-right">
+            <div className="connection-status-game">
+              {socketConnected ? (
+                <span className="status-connected">● Connected</span>
+              ) : (
+                <span className="status-disconnected">● Disconnected</span>
+              )}
+            </div>
+            <div className="user-info">
+              {renderAvatar(currentUser.avatar, currentUser.name)}
+              <span className="user-name">{currentUser.name}</span>
+            </div>
           </div>
         </div>
       </header>
