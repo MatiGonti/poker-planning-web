@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import './GameScreen.css';
 
 const VOTING_OPTIONS = ['0.5', '1', '1.5', '2', '2.5', '3', '3.5', '4', '5', '7', '8', '10', '20', '?'];
@@ -15,33 +15,39 @@ function GameScreen({
   const [showNewVotingModal, setShowNewVotingModal] = useState(false);
   const [taskName, setTaskName] = useState('');
 
-  const getInitials = (name) => {
-    if (!name) return '?';
-    const parts = name.trim().split(' ');
-    if (parts.length >= 2) {
-      return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
+  // Reset myVote when a new voting round starts or votes are cleared
+  useEffect(() => {
+    if (!votesRevealed && !currentTask) {
+      // Votes were cleared
+      setMyVote(null);
     }
-    return name.slice(0, 2).toUpperCase();
+  }, [votesRevealed, currentTask]);
+
+  // Reset myVote when currentTask changes (new voting round)
+  useEffect(() => {
+    setMyVote(null);
+  }, [currentTask]);
+
+  const getAvatarImageUrl = (avatar) => {
+    if (avatar && avatar.img) {
+      return `/avatars/${avatar.img}`;
+    }
+    return null;
   };
 
   const renderAvatar = (avatar, name) => {
-    if (typeof avatar === 'object' && avatar !== null) {
+    const imageUrl = getAvatarImageUrl(avatar);
+    if (imageUrl) {
       return (
-        <div 
-          className={`participant-avatar heraldic-${avatar.heraldic}`}
-          style={{ 
-            backgroundColor: avatar.bg,
-            color: avatar.text
-          }}
-        >
-          <div className="heraldic-inner">
-            {getInitials(name)}
-          </div>
-        </div>
+        <img 
+          src={imageUrl} 
+          alt={avatar.name || name}
+          className="participant-avatar"
+        />
       );
     }
-    // Fallback for old emoji format
-    return <span className="participant-avatar">{avatar}</span>;
+    // Fallback for old formats or missing avatar
+    return <span className="participant-avatar fallback">{name?.[0] || '?'}</span>;
   };
 
   const handleVote = (value) => {
