@@ -1,0 +1,363 @@
+.join-screen {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #2F4F2F 0%, #5D4E37 50%, #4A5568 100%);
+  padding: 20px;
+}
+
+.join-container {
+  background: #FEFCF7;
+  border-radius: 16px;
+  padding: 48px;
+  max-width: 650px;
+  width: 100%;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(139, 69, 19, 0.1);
+  border: 2px solid #D4C5B9;
+}
+
+.join-header {
+  text-align: center;
+  margin-bottom: 40px;
+  border-bottom: 2px solid #D4C5B9;
+  padding-bottom: 24px;
+}
+
+.join-header h1 {
+  margin: 0 0 12px 0;
+  color: #3F2A1D;
+  font-size: 2.5rem;
+  font-weight: 700;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+.subtitle {
+  color: #6B5744;
+  margin: 0;
+  font-size: 1.1rem;
+  font-weight: 500;
+  font-style: italic;
+}
+
+.join-form {
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+}
+
+.form-group {
+  text-align: left;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 12px;
+  color: #3F2A1D;
+  font-weight: 700;
+  font-size: 0.95rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.form-group input {
+  width: 100%;
+  padding: 14px 16px;
+  border: 2px solid #D4C5B9;
+  border-radius: 8px;
+  font-size: 1rem;
+  transition: all 0.2s;
+  box-sizing: border-box;
+  font-family: inherit;
+  background: white;
+}
+
+.form-group input:focus {
+  outline: none;
+  border-color: #8B4513;
+  box-shadow: 0 0 0 3px rgba(139, 69, 19, 0.1);
+}
+
+.form-group input::placeholder {
+  color: #B8A898;
+}
+
+.avatar-preview-section {
+  min-height: 100px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 20px;
+  background: linear-gradient(135deg, #F5F1EA 0%, #EAE4DA 100%);
+  border-radius: 12px;
+  border: 2px dashed #D4C5B9;
+}
+
+.avatar-preview {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+}
+
+.preview-avatar {
+  width: 100px;
+  height: 100px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2.5rem;
+  font-weight: 800;
+  position: relative;
+  overflow: visible;
+}
+
+.preview-avatar .heraldic-inner {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.preview-label {
+  font-size: 0.9rem;
+  color: #6B5744;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.color-grid {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 12px;
+}
+
+.color-option {
+  font-size: 1.5rem;
+  font-weight: 800;
+  padding: 0;
+  border: 3px solid transparent;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  aspect-ratio: 1;
+  position: relative;
+  overflow: visible;
+}
+
+.color-option .heraldic-inner {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  z-index: 1;
+}
+
+/* Heraldic Shield Styles */
+.heraldic-shield {
+  border-radius: 12px 12px 50% 50%;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3), 
+              inset 0 -3px 6px rgba(0, 0, 0, 0.2),
+              inset 0 2px 2px rgba(255, 255, 255, 0.2);
+}
+
+.heraldic-banner {
+  border-radius: 8px;
+  clip-path: polygon(0 0, 100% 0, 100% 80%, 50% 100%, 0 80%);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+.heraldic-crown {
+  border-radius: 4px 4px 12px 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3),
+              inset 0 2px 2px rgba(255, 255, 255, 0.2);
+  border-top: 4px solid rgba(255, 255, 255, 0.3);
+}
+
+.heraldic-tower {
+  border-radius: 0;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3),
+              inset 0 2px 2px rgba(255, 255, 255, 0.1);
+  border-top: 6px solid rgba(255, 255, 255, 0.2);
+  border-left: 2px solid rgba(0, 0, 0, 0.2);
+  border-right: 2px solid rgba(0, 0, 0, 0.2);
+}
+
+.heraldic-star {
+  border-radius: 50%;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3),
+              0 0 12px rgba(255, 255, 255, 0.3),
+              inset 0 2px 2px rgba(255, 255, 255, 0.2);
+}
+
+.heraldic-diamond {
+  border-radius: 4px;
+  transform: rotate(0deg);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3),
+              inset 2px 2px 4px rgba(0, 0, 0, 0.2),
+              inset -2px -2px 4px rgba(255, 255, 255, 0.1);
+  clip-path: polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%);
+}
+
+.heraldic-chevron {
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3),
+              inset 0 3px 0 rgba(255, 255, 255, 0.3);
+  border-bottom: 4px solid rgba(0, 0, 0, 0.3);
+}
+
+.heraldic-double {
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3),
+              inset 0 0 0 3px rgba(255, 255, 255, 0.2),
+              inset 0 0 0 6px rgba(0, 0, 0, 0.2);
+}
+
+.heraldic-cross {
+  border-radius: 4px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3),
+              inset 3px 0 0 rgba(255, 255, 255, 0.2),
+              inset -3px 0 0 rgba(255, 255, 255, 0.2),
+              inset 0 3px 0 rgba(255, 255, 255, 0.2),
+              inset 0 -3px 0 rgba(255, 255, 255, 0.2);
+}
+
+.heraldic-ornate {
+  border-radius: 50% 50% 12px 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3),
+              inset 0 0 0 2px rgba(255, 215, 0, 0.3),
+              inset 0 2px 4px rgba(255, 255, 255, 0.2);
+}
+
+.heraldic-royal {
+  border-radius: 12px 12px 4px 4px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3),
+              inset 0 3px 0 rgba(255, 215, 0, 0.4),
+              inset 0 -2px 4px rgba(0, 0, 0, 0.3);
+  border-top: 3px solid rgba(255, 215, 0, 0.5);
+}
+
+.heraldic-leaf {
+  border-radius: 50% 0 50% 50%;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3),
+              inset 2px -2px 4px rgba(0, 0, 0, 0.2),
+              inset -2px 2px 4px rgba(255, 255, 255, 0.1);
+}
+
+.color-option:hover {
+  transform: scale(1.1);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.4);
+  border-color: rgba(255, 255, 255, 0.3);
+  z-index: 10;
+}
+
+.color-option.selected {
+  transform: scale(1.15);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.5), 
+              0 0 0 4px #FFF, 
+              0 0 0 6px #8B4513,
+              0 0 20px rgba(139, 69, 19, 0.5);
+  border-color: rgba(255, 255, 255, 0.5);
+  z-index: 20;
+}
+
+.error-message {
+  background: #FEF2F2;
+  color: #7C2D12;
+  padding: 14px 16px;
+  border-radius: 8px;
+  text-align: center;
+  border-left: 4px solid #B91C1C;
+  font-weight: 600;
+}
+
+.connection-status {
+  text-align: center;
+  padding: 12px;
+  background: linear-gradient(135deg, #F5F1EA 0%, #EAE4DA 100%);
+  border-radius: 8px;
+  border: 1px solid #D4C5B9;
+}
+
+.status-connected {
+  color: #065F46;
+  font-weight: 700;
+  font-size: 0.95rem;
+}
+
+.status-connecting {
+  color: #92400E;
+  font-weight: 700;
+  font-size: 0.95rem;
+  animation: pulse 2s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.6; }
+}
+
+.join-button {
+  width: 100%;
+  padding: 18px;
+  background: linear-gradient(135deg, #8B4513 0%, #5D4E37 100%);
+  color: #FFF8DC;
+  border: none;
+  border-radius: 8px;
+  font-size: 1.1rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  box-shadow: 0 4px 14px rgba(139, 69, 19, 0.5), inset 0 1px 2px rgba(255, 255, 255, 0.2);
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+}
+
+.join-button:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(139, 69, 19, 0.6), inset 0 1px 2px rgba(255, 255, 255, 0.2);
+  background: linear-gradient(135deg, #A0522D 0%, #6B4423 100%);
+}
+
+.join-button:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+.join-button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  box-shadow: none;
+}
+
+@media (max-width: 768px) {
+  .join-container {
+    padding: 32px 24px;
+  }
+  
+  .join-header h1 {
+    font-size: 2rem;
+  }
+  
+  .color-grid {
+    grid-template-columns: repeat(4, 1fr);
+    gap: 10px;
+  }
+  
+  .color-option {
+    font-size: 1.2rem;
+    padding: 16px;
+  }
+}
+
+@media (max-width: 480px) {
+  .color-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
