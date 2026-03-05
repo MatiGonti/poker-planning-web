@@ -117,6 +117,7 @@ function App() {
   return (
     <GameScreen
       socket={socket}
+      socketConnected={socketConnected}
       currentUser={currentUser}
       participants={participants}
       currentTask={currentTask}
