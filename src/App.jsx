@@ -9,6 +9,8 @@ function App() {
   const [socketConnected, setSocketConnected] = useState(false);
   const [joined, setJoined] = useState(false);
   const [currentUser, setCurrentUser] = useState(null);
+  const [gameCode, setGameCode] = useState(null);
+  const [gameDisplayName, setGameDisplayName] = useState(null);
   const [participants, setParticipants] = useState([]);
   const [currentTask, setCurrentTask] = useState('');
   const [votesRevealed, setVotesRevealed] = useState(false);
@@ -37,10 +39,34 @@ function App() {
 
     newSocket.on('game-state', (state) => {
       console.log('Received game-state:', state);
-      setParticipants(state.participants);
-      setCurrentTask(state.currentTask);
-      setVotesRevealed(state.votesRevealed);
-      setResults(state.results);
+      if (state.gameCode) setGameCode(state.gameCode);
+      if (state.displayName) setGameDisplayName(state.displayName);
+      setParticipants(state.participants || []);
+      setCurrentTask(state.currentTask || '');
+      setVotesRevealed(state.votesRevealed || false);
+      setResults(state.results || null);
+      setJoined(true);
+    });
+
+    newSocket.on('join-error', ({ message }) => {
+      console.error('Join error:', message);
+      setJoined(false);
+      setCurrentUser(null);
+      setGameCode(null);
+      setGameDisplayName(null);
+      alert(message || 'Could not join game.');
+    });
+
+    newSocket.on('game-closed', ({ message }) => {
+      setJoined(false);
+      setCurrentUser(null);
+      setGameCode(null);
+      setGameDisplayName(null);
+      setParticipants([]);
+      setCurrentTask('');
+      setVotesRevealed(false);
+      setResults(null);
+      alert(message || 'The game was closed.');
     });
 
     newSocket.on('participants-updated', (updatedParticipants) => {
@@ -77,35 +103,28 @@ function App() {
     // };
   }, []);
 
-  const handleJoin = (name, avatar) => {
+  const handleJoin = (name, avatar, gameCodeToJoin) => {
     if (!socket) {
       console.error('Socket is null!');
       alert('Connection error. Please refresh the page.');
       return;
     }
 
-    console.log('Attempting to join game. Socket connected:', socket.connected);
     setCurrentUser({ name, avatar });
-    
+    const payload = gameCodeToJoin
+      ? { name, avatar, gameCode: gameCodeToJoin }
+      : { name, avatar };
+
     if (socket.connected) {
-      // Already connected, join immediately
-      console.log('Socket already connected, emitting join-game');
-      socket.emit('join-game', { name, avatar });
-      setJoined(true);
+      socket.emit('join-game', payload);
     } else {
-      // Wait for connection before joining
-      console.log('Socket not connected yet, waiting for connection...');
-      
       const connectTimeout = setTimeout(() => {
-        alert('Could not connect to server. Please check if the backend is running on port 3000 and refresh the page.');
+        alert('Could not connect to server. Please check if the backend is running and refresh the page.');
         setCurrentUser(null);
       }, 10000);
-      
       socket.once('connect', () => {
         clearTimeout(connectTimeout);
-        console.log('Socket connected! Now emitting join-game');
-        socket.emit('join-game', { name, avatar });
-        setJoined(true);
+        socket.emit('join-game', payload);
       });
     }
   };
@@ -119,6 +138,8 @@ function App() {
       socket={socket}
       socketConnected={socketConnected}
       currentUser={currentUser}
+      gameCode={gameCode}
+      gameDisplayName={gameDisplayName}
       participants={participants}
       currentTask={currentTask}
       votesRevealed={votesRevealed}
