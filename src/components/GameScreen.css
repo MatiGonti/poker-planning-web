@@ -21,6 +21,53 @@
   align-items: center;
 }
 
+.game-code-badge {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 12px;
+  background: rgba(255, 248, 220, 0.2);
+  border: 1px solid rgba(255, 248, 220, 0.35);
+  border-radius: 20px;
+}
+
+.game-code-badge-header {
+  flex-shrink: 0;
+}
+
+.game-code-label {
+  font-size: 0.8rem;
+  color: rgba(255, 248, 220, 0.9);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.game-code-value {
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: #FFF8DC;
+  background: rgba(0, 0, 0, 0.2);
+  padding: 2px 8px;
+  border-radius: 6px;
+  font-family: ui-monospace, monospace;
+}
+
+.game-code-copy {
+  padding: 4px 10px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  border: 1px solid rgba(255, 248, 220, 0.5);
+  border-radius: 8px;
+  background: rgba(255, 248, 220, 0.15);
+  color: #FFF8DC;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.game-code-copy:hover {
+  background: rgba(255, 248, 220, 0.3);
+}
+
 .header-right {
   display: flex;
   align-items: center;
@@ -579,6 +626,26 @@
 
   .header-right {
     gap: 8px;
+  }
+
+  .game-code-badge {
+    flex-wrap: wrap;
+    gap: 4px;
+    padding: 4px 8px;
+  }
+
+  .game-code-label {
+    width: 100%;
+    font-size: 0.7rem;
+  }
+
+  .game-code-value {
+    font-size: 0.8rem;
+  }
+
+  .game-code-copy {
+    padding: 2px 8px;
+    font-size: 0.7rem;
   }
 
   .connection-status-game {

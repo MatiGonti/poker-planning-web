@@ -7,6 +7,8 @@ function GameScreen({
   socket,
   socketConnected,
   currentUser,
+  gameCode,
+  gameDisplayName,
   participants, 
   currentTask, 
   votesRevealed, 
@@ -15,6 +17,15 @@ function GameScreen({
   const [myVote, setMyVote] = useState(null);
   const [showNewVotingModal, setShowNewVotingModal] = useState(false);
   const [taskName, setTaskName] = useState('');
+  const [copied, setCopied] = useState(false);
+
+  const handleCopyCode = () => {
+    if (!gameCode) return;
+    navigator.clipboard.writeText(gameCode).then(() => {
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    });
+  };
 
   // Reset myVote when a new voting round starts or votes are cleared
   useEffect(() => {
@@ -111,6 +122,15 @@ function GameScreen({
       <header className="game-header">
         <div className="header-content">
           <h1>⚔️ Poker Planning</h1>
+          {gameCode && (
+            <div className="game-code-badge game-code-badge-header" title="Share this code so others can join">
+              <span className="game-code-label">{gameDisplayName || gameCode}</span>
+              <code className="game-code-value">{gameCode}</code>
+              <button type="button" className="game-code-copy" onClick={handleCopyCode} title="Copy code">
+                {copied ? '✓ Copied' : 'Copy'}
+              </button>
+            </div>
+          )}
           <div className="header-right">
             <div className="connection-status-game">
               {socketConnected ? (

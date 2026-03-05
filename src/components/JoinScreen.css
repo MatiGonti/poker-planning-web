@@ -40,6 +40,38 @@
   font-style: italic;
 }
 
+.mode-toggle {
+  display: flex;
+  gap: 0;
+  margin-bottom: 24px;
+  border-radius: 10px;
+  overflow: hidden;
+  border: 2px solid #D4C5B9;
+  background: #F5F1EA;
+}
+
+.mode-btn {
+  flex: 1;
+  padding: 14px 20px;
+  border: none;
+  background: transparent;
+  color: #6B5744;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.mode-btn:hover {
+  background: #EAE4DA;
+  color: #3F2A1D;
+}
+
+.mode-btn.active {
+  background: linear-gradient(135deg, #8B4513 0%, #5D4E37 100%);
+  color: #FFF8DC;
+}
+
 .join-form {
   display: flex;
   flex-direction: column;

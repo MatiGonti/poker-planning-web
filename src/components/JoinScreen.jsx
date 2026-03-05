@@ -1,9 +1,7 @@
 import { useState } from 'react';
 import './JoinScreen.css';
 
-// Avatar configurations - individual image files
 const AVATARS = [
-  // 🌍 25 Countries
   { id: 1, img: 'avatar-01-uk.png', name: 'UK Bulldog' },
   { id: 2, img: 'avatar-02-france.png', name: 'French Mime' },
   { id: 3, img: 'avatar-03-germany.png', name: 'German Beer' },
@@ -29,13 +27,11 @@ const AVATARS = [
   { id: 23, img: 'avatar-23-turkey.png', name: 'Turkish Kebab' },
   { id: 24, img: 'avatar-24-peru.png', name: 'Peruvian Llama' },
   { id: 25, img: 'avatar-25-korea.png', name: 'Korean K-Pop' },
-  // 💢 5 Angry Slavic Persons
   { id: 26, img: 'avatar-26-tracksuit.png', name: 'Tracksuit Boss' },
   { id: 27, img: 'avatar-27-babushka.png', name: 'Angry Babushka' },
   { id: 28, img: 'avatar-28-woodsman.png', name: 'Grumpy Woodsman' },
   { id: 29, img: 'avatar-29-pierogi.png', name: 'Pierogi Guard' },
   { id: 30, img: 'avatar-30-no-neighbor.png', name: 'No Neighbor' },
-  // 🤡 5 Funny Animals (IT/Work Set)
   { id: 31, img: 'avatar-31-bug-hunter-cat.png', name: 'Bug Hunter Cat' },
   { id: 32, img: 'avatar-32-fine-dog.png', name: 'Fine Dog' },
   { id: 33, img: 'avatar-33-log-squirrel.png', name: 'Log Squirrel' },
@@ -44,46 +40,88 @@ const AVATARS = [
 ];
 
 function JoinScreen({ onJoin, socketConnected }) {
+  const [mode, setMode] = useState('join'); // 'join' | 'create'
+  const [gameCode, setGameCode] = useState('');
   const [name, setName] = useState('');
   const [selectedAvatar, setSelectedAvatar] = useState(null);
   const [error, setError] = useState('');
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    
     if (!name.trim()) {
       setError('Please enter your name');
       return;
     }
-    
     if (!selectedAvatar) {
       setError('Please select an avatar');
       return;
     }
-
+    if (mode === 'join' && !gameCode.trim()) {
+      setError('Please enter the game code');
+      return;
+    }
     if (!socketConnected) {
       setError('Connecting to server... Please wait');
       return;
     }
-    
-    onJoin(name.trim(), selectedAvatar);
+    const codeForJoin = mode === 'join' ? gameCode.trim() : null;
+    onJoin(name.trim(), selectedAvatar, codeForJoin);
   };
 
-  const getAvatarImageUrl = (avatar) => {
-    return `/avatars/${avatar.img}`;
-  };
+  const getAvatarImageUrl = (avatar) => `/avatars/${avatar.img}`;
 
   return (
     <div className="join-screen">
       <div className="join-container">
         <div className="join-header">
           <h1>⚔️ Poker Planning</h1>
-          <p className="subtitle">Choose your character</p>
+          <p className="subtitle">Choose your path</p>
         </div>
-        
+
+        <div className="mode-toggle">
+          <button
+            type="button"
+            className={`mode-btn ${mode === 'join' ? 'active' : ''}`}
+            onClick={() => {
+              setMode('join');
+              setError('');
+            }}
+          >
+            Join game
+          </button>
+          <button
+            type="button"
+            className={`mode-btn ${mode === 'create' ? 'active' : ''}`}
+            onClick={() => {
+              setMode('create');
+              setError('');
+            }}
+          >
+            Create new game
+          </button>
+        </div>
+
         <form onSubmit={handleSubmit} className="join-form">
+          {mode === 'join' && (
+            <div className="form-group">
+              <label htmlFor="gameCode">Game code</label>
+              <input
+                type="text"
+                id="gameCode"
+                value={gameCode}
+                onChange={(e) => {
+                  setGameCode(e.target.value);
+                  setError('');
+                }}
+                placeholder="e.g. second-breakfast"
+                maxLength={40}
+                autoComplete="off"
+              />
+            </div>
+          )}
+
           <div className="form-group">
-            <label htmlFor="name">Your Name</label>
+            <label htmlFor="name">Your name</label>
             <input
               type="text"
               id="name"
@@ -94,17 +132,17 @@ function JoinScreen({ onJoin, socketConnected }) {
               }}
               placeholder="Enter your name"
               maxLength={20}
-              autoFocus
+              autoFocus={mode === 'create'}
             />
           </div>
 
           <div className="form-group">
-            <label>Choose Your Avatar</label>
+            <label>Choose your avatar</label>
             {selectedAvatar && (
               <div className="avatar-preview-section">
                 <div className="avatar-preview">
-                  <img 
-                    src={getAvatarImageUrl(selectedAvatar)} 
+                  <img
+                    src={getAvatarImageUrl(selectedAvatar)}
                     alt={selectedAvatar.name}
                     className="preview-avatar"
                   />
@@ -124,8 +162,8 @@ function JoinScreen({ onJoin, socketConnected }) {
                   }}
                   title={avatar.name}
                 >
-                  <img 
-                    src={getAvatarImageUrl(avatar)} 
+                  <img
+                    src={getAvatarImageUrl(avatar)}
                     alt={avatar.name}
                     className="avatar-image"
                   />
@@ -145,7 +183,11 @@ function JoinScreen({ onJoin, socketConnected }) {
           </div>
 
           <button type="submit" className="join-button" disabled={!socketConnected}>
-            {socketConnected ? 'Join Session' : 'Connecting...'}
+            {socketConnected
+              ? mode === 'join'
+                ? 'Join game'
+                : 'Create new game'
+              : 'Connecting...'}
           </button>
         </form>
       </div>
