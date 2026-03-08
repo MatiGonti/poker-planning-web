@@ -37,6 +37,9 @@ const AVATARS = [
   { id: 33, img: 'avatar-33-log-squirrel.png', name: 'Log Squirrel' },
   { id: 34, img: 'avatar-34-release-sloth.png', name: 'Release Sloth' },
   { id: 35, img: 'avatar-35-rubber-duck-boss.png', name: 'Rubber Duck Boss' },
+  { id: 36, img: 'avatar-36-ogre.png', name: 'Hungry Ogre' },
+  { id: 37, img: 'avatar-37-commando.png', name: 'Alpha Male Commando' },
+  { id: 38, img: 'avatar-38-superhero.png', name: 'Galactic Superhero' }  
 ];
 
 function JoinScreen({ onJoin, socketConnected }) {
