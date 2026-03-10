@@ -3,6 +3,9 @@ import { io } from 'socket.io-client';
 // Use environment variable for Socket URL, fallback to localhost for development
 const SOCKET_URL = import.meta.env.VITE_SOCKET_URL || 'http://localhost:3000';
 
+/** Base URL of the backend (for health checks) */
+export const getBackendUrl = () => SOCKET_URL;
+
 let socket = null;
 
 export const initializeSocket = () => {

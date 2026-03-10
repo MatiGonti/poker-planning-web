@@ -1,12 +1,15 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import JoinScreen from './components/JoinScreen';
 import GameScreen from './components/GameScreen';
-import { initializeSocket } from './socket';
+import { initializeSocket, getBackendUrl } from './socket';
 import './App.css';
+
+const HEALTH_CHECK_INTERVAL_MS = 5000;
 
 function App() {
   const [socket, setSocket] = useState(null);
   const [socketConnected, setSocketConnected] = useState(false);
+  const [serverHealthy, setServerHealthy] = useState(true);
   const [joined, setJoined] = useState(false);
   const [currentUser, setCurrentUser] = useState(null);
   const [gameCode, setGameCode] = useState(null);
@@ -36,6 +39,18 @@ function App() {
       console.log('Socket disconnected');
       setSocketConnected(false);
     });
+
+    // Health check every 5s so we detect when backend is down even if socket still thinks it's connected
+    const checkHealth = async () => {
+      try {
+        const res = await fetch(`${getBackendUrl()}/health`, { method: 'GET' });
+        setServerHealthy(res.ok);
+      } catch {
+        setServerHealthy(false);
+      }
+    };
+    checkHealth();
+    const healthInterval = setInterval(checkHealth, HEALTH_CHECK_INTERVAL_MS);
 
     newSocket.on('game-state', (state) => {
       console.log('Received game-state:', state);
@@ -96,12 +111,27 @@ function App() {
       setParticipants(data.participants);
     });
 
-    // Don't disconnect on unmount during development
-    // return () => {
-    //   console.log('Disconnecting socket...');
-    //   newSocket.disconnect();
-    // };
+    return () => clearInterval(healthInterval);
   }, []);
+
+  const connectionOk = socketConnected && serverHealthy;
+  const wasDisconnectedRef = useRef(false);
+
+  // Auto-rejoin when connection is restored while on the game screen
+  useEffect(() => {
+    if (!connectionOk) {
+      wasDisconnectedRef.current = true;
+      return;
+    }
+    if (joined && gameCode && currentUser && socket?.connected && wasDisconnectedRef.current) {
+      socket.emit('join-game', {
+        gameCode,
+        name: currentUser.name,
+        avatar: currentUser.avatar,
+      });
+      wasDisconnectedRef.current = false;
+    }
+  }, [connectionOk, joined, gameCode, currentUser, socket]);
 
   const handleJoin = (name, avatar, gameCodeToJoin) => {
     if (!socket) {
@@ -130,13 +160,13 @@ function App() {
   };
 
   if (!joined) {
-    return <JoinScreen onJoin={handleJoin} socketConnected={socketConnected} />;
+    return <JoinScreen onJoin={handleJoin} socketConnected={connectionOk} />;
   }
 
   return (
     <GameScreen
       socket={socket}
-      socketConnected={socketConnected}
+      socketConnected={connectionOk}
       currentUser={currentUser}
       gameCode={gameCode}
       gameDisplayName={gameDisplayName}

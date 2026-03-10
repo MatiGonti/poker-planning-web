@@ -68,6 +68,12 @@
   background: rgba(255, 248, 220, 0.3);
 }
 
+.app-version-header {
+  font-size: 0.75rem;
+  color: rgba(255, 248, 220, 0.7);
+  font-weight: 500;
+}
+
 .header-right {
   display: flex;
   align-items: center;

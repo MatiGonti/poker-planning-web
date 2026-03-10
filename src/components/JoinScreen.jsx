@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { APP_VERSION } from '../version';
 import './JoinScreen.css';
 
 const AVATARS = [
@@ -192,6 +193,8 @@ function JoinScreen({ onJoin, socketConnected }) {
                 : 'Create new game'
               : 'Connecting...'}
           </button>
+
+          <div className="app-version">v{APP_VERSION}</div>
         </form>
       </div>
     </div>

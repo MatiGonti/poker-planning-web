@@ -265,6 +265,13 @@
   box-shadow: none;
 }
 
+.app-version {
+  text-align: center;
+  font-size: 0.8rem;
+  color: #8B7355;
+  margin-top: 12px;
+}
+
 @media (max-width: 768px) {
   .join-container {
     padding: 32px 24px;

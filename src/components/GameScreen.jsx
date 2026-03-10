@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { APP_VERSION } from '../version';
 import './GameScreen.css';
 
 const VOTING_OPTIONS = ['0.5', '1', '1.5', '2', '2.5', '3', '3.5', '4', '5', '7', '8', '10', '20', '?'];
@@ -132,6 +133,7 @@ function GameScreen({
             </div>
           )}
           <div className="header-right">
+            <span className="app-version-header">v{APP_VERSION}</span>
             <div className="connection-status-game">
               {socketConnected ? (
                 <span className="status-connected">● Connected</span>
