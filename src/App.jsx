@@ -18,6 +18,9 @@ function App() {
   const [currentTask, setCurrentTask] = useState('');
   const [votesRevealed, setVotesRevealed] = useState(false);
   const [results, setResults] = useState(null);
+  const [votingOptions, setVotingOptions] = useState(null);
+  const [votingRoundKey, setVotingRoundKey] = useState(0);
+  const [gameLog, setGameLog] = useState([]);
 
   useEffect(() => {
     console.log('Initializing socket...');
@@ -60,7 +63,22 @@ function App() {
       setCurrentTask(state.currentTask || '');
       setVotesRevealed(state.votesRevealed || false);
       setResults(state.results || null);
+      setVotingOptions(state.votingOptions || null);
+      setGameLog(Array.isArray(state.gameLog) ? state.gameLog : []);
       setJoined(true);
+    });
+
+    newSocket.on('game-log', (entry) => {
+      setGameLog((prev) => {
+        const last = prev[prev.length - 1];
+        const isDuplicate =
+          last &&
+          last.type === entry.type &&
+          last.name === entry.name &&
+          (last.taskName ?? '') === (entry.taskName ?? '');
+        if (isDuplicate) return prev;
+        return [...prev.slice(-99), entry];
+      });
     });
 
     newSocket.on('join-error', ({ message }) => {
@@ -95,6 +113,7 @@ function App() {
       setVotesRevealed(false);
       setResults(null);
       setParticipants(data.participants);
+      setVotingRoundKey((k) => k + 1);
     });
 
     newSocket.on('votes-revealed', (revealedResults) => {
@@ -109,9 +128,15 @@ function App() {
       setVotesRevealed(false);
       setResults(null);
       setParticipants(data.participants);
+      setVotingRoundKey((k) => k + 1);
     });
 
-    return () => clearInterval(healthInterval);
+    return () => {
+      clearInterval(healthInterval);
+      newSocket.off('connect').off('connect_error').off('disconnect');
+      newSocket.off('game-state').off('game-log').off('join-error').off('game-closed');
+      newSocket.off('participants-updated').off('voting-started').off('votes-revealed').off('votes-cleared');
+    };
   }, []);
 
   const connectionOk = socketConnected && serverHealthy;
@@ -133,7 +158,7 @@ function App() {
     }
   }, [connectionOk, joined, gameCode, currentUser, socket]);
 
-  const handleJoin = (name, avatar, gameCodeToJoin) => {
+  const handleJoin = (name, avatar, gameCodeToJoin, scaleForCreate) => {
     if (!socket) {
       console.error('Socket is null!');
       alert('Connection error. Please refresh the page.');
@@ -143,7 +168,7 @@ function App() {
     setCurrentUser({ name, avatar });
     const payload = gameCodeToJoin
       ? { name, avatar, gameCode: gameCodeToJoin }
-      : { name, avatar };
+      : { name, avatar, scale: scaleForCreate };
 
     if (socket.connected) {
       socket.emit('join-game', payload);
@@ -174,6 +199,10 @@ function App() {
       currentTask={currentTask}
       votesRevealed={votesRevealed}
       results={results}
+      votingOptions={votingOptions}
+      votingRoundKey={votingRoundKey}
+      gameLog={gameLog}
+      setGameLog={setGameLog}
     />
   );
 }

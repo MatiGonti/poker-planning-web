@@ -114,6 +114,171 @@
   color: #B8A898;
 }
 
+.scale-select {
+  width: 100%;
+  padding: 14px 16px;
+  border: 2px solid #D4C5B9;
+  border-radius: 8px;
+  font-size: 1rem;
+  background: white;
+  color: #3F2A1D;
+  font-family: inherit;
+  cursor: pointer;
+  margin-bottom: 10px;
+}
+
+.scale-select:focus {
+  outline: none;
+  border-color: #8B4513;
+  box-shadow: 0 0 0 3px rgba(139, 69, 19, 0.1);
+}
+
+.scale-custom-input {
+  width: 100%;
+  padding: 12px 16px;
+  border: 2px solid #D4C5B9;
+  border-radius: 8px;
+  font-size: 1rem;
+  margin-top: 8px;
+  box-sizing: border-box;
+  font-family: inherit;
+  background: white;
+}
+
+.scale-custom-input:focus {
+  outline: none;
+  border-color: #8B4513;
+}
+
+/* Advanced (create game) */
+.advanced-section {
+  margin-top: 4px;
+}
+
+.advanced-toggle {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 0;
+  border: none;
+  background: none;
+  color: #6B5744;
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  font-family: inherit;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.advanced-toggle:hover {
+  color: #8B4513;
+}
+
+.advanced-content {
+  margin-top: 12px;
+  padding-top: 12px;
+  border-top: 1px solid #E8E0D5;
+}
+
+.advanced-content label {
+  display: block;
+  margin-bottom: 8px;
+  color: #3F2A1D;
+  font-weight: 700;
+  font-size: 0.9rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* Avatar: default hidden picker, compact preview + Change avatar */
+.avatar-form-group {
+  margin-top: 4px;
+}
+
+.avatar-default-row {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.avatar-preview-compact {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-height: 56px;
+}
+
+.preview-avatar-small {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  border: 2px solid #8B4513;
+  object-fit: cover;
+  flex-shrink: 0;
+}
+
+.preview-label-small {
+  font-size: 0.9rem;
+  color: #6B5744;
+  font-weight: 600;
+}
+
+.change-avatar-btn {
+  padding: 8px 14px;
+  border: 2px solid #D4C5B9;
+  border-radius: 8px;
+  background: #F5F1EA;
+  color: #5D4E37;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  font-family: inherit;
+  transition: all 0.2s;
+}
+
+.change-avatar-btn:hover {
+  border-color: #8B4513;
+  color: #8B4513;
+  background: #EAE4DA;
+}
+
+.avatar-form-group .avatar-grid {
+  margin-top: 8px;
+}
+
+.avatar-grid--compact {
+  max-height: none;
+  grid-template-columns: repeat(5, 1fr);
+}
+
+.avatar-grid--full {
+  grid-template-columns: repeat(6, 1fr);
+  max-height: 400px;
+  overflow-y: auto;
+}
+
+.expand-avatars-btn {
+  margin-top: 12px;
+  padding: 8px 14px;
+  border: 2px solid #D4C5B9;
+  border-radius: 8px;
+  background: #F5F1EA;
+  color: #5D4E37;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  font-family: inherit;
+  transition: all 0.2s;
+}
+
+.expand-avatars-btn:hover {
+  border-color: #8B4513;
+  color: #8B4513;
+  background: #EAE4DA;
+}
+
 .avatar-preview-section {
   min-height: 140px;
   display: flex;

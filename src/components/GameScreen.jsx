@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { APP_VERSION } from '../version';
 import './GameScreen.css';
 
-const VOTING_OPTIONS = ['0.5', '1', '1.5', '2', '2.5', '3', '3.5', '4', '5', '7', '8', '10', '20', '?'];
+const DEFAULT_VOTING_OPTIONS = ['0.5', '1', '1.5', '2', '2.5', '3', '3.5', '4', '5', '7', '8', '10', '20', '?'];
 
 function GameScreen({ 
   socket,
@@ -13,12 +13,20 @@ function GameScreen({
   participants, 
   currentTask, 
   votesRevealed, 
-  results 
+  results,
+  votingOptions: votingOptionsProp,
+  votingRoundKey,
+  gameLog = [],
+  setGameLog
 }) {
+  const votingOptions = Array.isArray(votingOptionsProp) && votingOptionsProp.length > 0
+    ? votingOptionsProp
+    : DEFAULT_VOTING_OPTIONS;
   const [myVote, setMyVote] = useState(null);
   const [showNewVotingModal, setShowNewVotingModal] = useState(false);
   const [taskName, setTaskName] = useState('');
   const [copied, setCopied] = useState(false);
+  const [logExpanded, setLogExpanded] = useState(false);
 
   const handleCopyCode = () => {
     if (!gameCode) return;
@@ -28,18 +36,10 @@ function GameScreen({
     });
   };
 
-  // Reset myVote when a new voting round starts or votes are cleared
-  useEffect(() => {
-    if (!votesRevealed && !currentTask) {
-      // Votes were cleared
-      setMyVote(null);
-    }
-  }, [votesRevealed, currentTask]);
-
-  // Reset myVote when currentTask changes (new voting round)
+  // Reset myVote whenever a new round starts or votes are cleared (votingRoundKey bumps on voting-started and votes-cleared)
   useEffect(() => {
     setMyVote(null);
-  }, [currentTask]);
+  }, [votingRoundKey]);
 
   const getAvatarImageUrl = (avatar) => {
     if (avatar && avatar.img) {
@@ -64,8 +64,13 @@ function GameScreen({
   };
 
   const handleVote = (value) => {
-    setMyVote(value);
-    socket.emit('submit-vote', value);
+    if (myVote === value) {
+      setMyVote(null);
+      socket.emit('retract-vote');
+    } else {
+      setMyVote(value);
+      socket.emit('submit-vote', value);
+    }
   };
 
   const handleStartVoting = (e) => {
@@ -123,15 +128,6 @@ function GameScreen({
       <header className="game-header">
         <div className="header-content">
           <h1>⚔️ Poker Planning</h1>
-          {gameCode && (
-            <div className="game-code-badge game-code-badge-header" title="Share this code so others can join">
-              <span className="game-code-label">{gameDisplayName || gameCode}</span>
-              <code className="game-code-value">{gameCode}</code>
-              <button type="button" className="game-code-copy" onClick={handleCopyCode} title="Copy code">
-                {copied ? '✓ Copied' : 'Copy'}
-              </button>
-            </div>
-          )}
           <div className="header-right">
             <span className="app-version-header">v{APP_VERSION}</span>
             <div className="connection-status-game">
@@ -148,6 +144,16 @@ function GameScreen({
           </div>
         </div>
       </header>
+
+      {gameCode && (
+        <div className="game-code-bar" title="Share this code so others can join">
+          <span className="game-code-label">{gameDisplayName || gameCode}</span>
+          <code className="game-code-value">{gameCode}</code>
+          <button type="button" className="game-code-copy" onClick={handleCopyCode} title="Copy code">
+            {copied ? '✓ Copied' : 'Copy'}
+          </button>
+        </div>
+      )}
 
       <div className="game-content">
         <aside className="participants-panel">
@@ -181,7 +187,7 @@ function GameScreen({
                   <div className="voting-section">
                     <h3>Cast Your Vote</h3>
                     <div className="voting-buttons">
-                      {VOTING_OPTIONS.map((option) => (
+                      {votingOptions.map((option) => (
                         <button
                           key={option}
                           className={`vote-button ${myVote === option ? 'selected' : ''}`}
@@ -192,7 +198,10 @@ function GameScreen({
                       ))}
                     </div>
                     {myVote && (
-                      <p className="vote-confirmation">You voted: <strong>{myVote}</strong></p>
+                      <p className="vote-confirmation">
+                        You voted: <strong>{myVote}</strong>
+                        <span className="vote-unvote-hint"> — click it again to unvote</span>
+                      </p>
                     )}
                   </div>
 
@@ -203,6 +212,18 @@ function GameScreen({
                       disabled={votedCount === 0}
                     >
                       Show Results
+                    </button>
+                    <button 
+                      className="control-button clear"
+                      onClick={handleClearVotes}
+                    >
+                      Cancel voting
+                    </button>
+                    <button 
+                      className="control-button new"
+                      onClick={() => setShowNewVotingModal(true)}
+                    >
+                      New Voting Round
                     </button>
                   </div>
                 </>
@@ -268,6 +289,39 @@ function GameScreen({
             </div>
           )}
         </main>
+      </div>
+
+      <div className="game-log-section">
+        <button
+          type="button"
+          className="game-log-toggle"
+          onClick={() => setLogExpanded((e) => !e)}
+          aria-expanded={logExpanded}
+        >
+          <span className="game-log-toggle-icon">{logExpanded ? '▼' : '▶'}</span>
+          Game log ({gameLog.length})
+        </button>
+        {logExpanded && (
+          <div className="game-log-list">
+            {gameLog.length === 0 ? (
+              <p className="game-log-empty">No events yet.</p>
+            ) : (
+              gameLog.map((entry, i) => (
+                <div key={i} className="game-log-entry">
+                  {entry.type === 'joined' && <><span className="game-log-name">{entry.name}</span> joined</>}
+                  {entry.type === 'left' && <><span className="game-log-name">{entry.name}</span> left</>}
+                  {entry.type === 'voted' && <><span className="game-log-name">{entry.name}</span> voted</>}
+                  {entry.type === 'revealed-results' && <><span className="game-log-name">{entry.name}</span> showed results</>}
+                  {entry.type === 'cleared-results' && <><span className="game-log-name">{entry.name}</span> cleared results</>}
+                  {entry.type === 'started-voting' && <><span className="game-log-name">{entry.name}</span> started voting: {entry.taskName || '—'}</>}
+                  {!['joined', 'left', 'voted', 'revealed-results', 'cleared-results', 'started-voting'].includes(entry.type) && (
+                    <><span className="game-log-name">{entry.name}</span>: {entry.type}</>
+                  )}
+                </div>
+              ))
+            )}
+          </div>
+        )}
       </div>
 
       {showNewVotingModal && (

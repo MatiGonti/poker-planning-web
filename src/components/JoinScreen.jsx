@@ -38,16 +38,32 @@ const AVATARS = [
   { id: 33, img: 'avatar-33-log-squirrel.png', name: 'Log Squirrel' },
   { id: 34, img: 'avatar-34-release-sloth.png', name: 'Release Sloth' },
   { id: 35, img: 'avatar-35-rubber-duck-boss.png', name: 'Rubber Duck Boss' },
-  { id: 36, img: 'avatar-36-ogre.png', name: 'Hungry Ogre' },
-  { id: 37, img: 'avatar-37-commando.png', name: 'Alpha Male Commando' },
-  { id: 38, img: 'avatar-38-superhero.png', name: 'Galactic Superhero' }  
+  { id: 36, img: 'avatar-36-owl-coder.png', name: 'Night Owl Coder' },
+  { id: 37, img: 'avatar-37-merge-cat.png', name: 'Merge Conflict Cat' },
+  { id: 38, img: 'avatar-38-deploy-unicorn.png', name: 'Deploy Unicorn' }  
 ];
+
+const DEFAULT_AVATAR_COUNT = 5;
+
+function getRandomFiveAvatars() {
+  const shuffled = [...AVATARS].sort(() => Math.random() - 0.5);
+  return shuffled.slice(0, DEFAULT_AVATAR_COUNT);
+}
+
+const SCALE_DEFAULT = 'default';
+const SCALE_FIBONACCI = 'fibonacci';
+const SCALE_CUSTOM = 'custom';
 
 function JoinScreen({ onJoin, socketConnected }) {
   const [mode, setMode] = useState('join'); // 'join' | 'create'
   const [gameCode, setGameCode] = useState('');
   const [name, setName] = useState('');
   const [selectedAvatar, setSelectedAvatar] = useState(null);
+  const [defaultAvatars] = useState(getRandomFiveAvatars); // 5 random, stable on mount
+  const [showAllAvatars, setShowAllAvatars] = useState(false);
+  const [scalePreset, setScalePreset] = useState(SCALE_DEFAULT); // 'default' | 'fibonacci' | 'custom'
+  const [scaleCustom, setScaleCustom] = useState(''); // e.g. "1, 2, 3, 5, 8, 13"
+  const [showAdvanced, setShowAdvanced] = useState(false);
   const [error, setError] = useState('');
 
   const handleSubmit = (e) => {
@@ -68,8 +84,18 @@ function JoinScreen({ onJoin, socketConnected }) {
       setError('Connecting to server... Please wait');
       return;
     }
+    if (mode === 'create' && scalePreset === SCALE_CUSTOM && !scaleCustom.trim()) {
+      setError('Enter custom voting values (e.g. 1, 2, 3, 5, 8)');
+      return;
+    }
     const codeForJoin = mode === 'join' ? gameCode.trim() : null;
-    onJoin(name.trim(), selectedAvatar, codeForJoin);
+    const scaleForCreate =
+      mode === 'create'
+        ? scalePreset === SCALE_CUSTOM
+          ? scaleCustom.trim()
+          : scalePreset
+        : undefined;
+    onJoin(name.trim(), selectedAvatar, codeForJoin, scaleForCreate);
   };
 
   const getAvatarImageUrl = (avatar) => `/avatars/${avatar.img}`;
@@ -140,22 +166,10 @@ function JoinScreen({ onJoin, socketConnected }) {
             />
           </div>
 
-          <div className="form-group">
+          <div className="form-group avatar-form-group">
             <label>Choose your avatar</label>
-            {selectedAvatar && (
-              <div className="avatar-preview-section">
-                <div className="avatar-preview">
-                  <img
-                    src={getAvatarImageUrl(selectedAvatar)}
-                    alt={selectedAvatar.name}
-                    className="preview-avatar"
-                  />
-                  <span className="preview-label">{selectedAvatar.name}</span>
-                </div>
-              </div>
-            )}
-            <div className="avatar-grid">
-              {AVATARS.map((avatar) => (
+            <div className={`avatar-grid ${showAllAvatars ? 'avatar-grid--full' : 'avatar-grid--compact'}`}>
+              {(showAllAvatars ? AVATARS : defaultAvatars).map((avatar) => (
                 <button
                   key={avatar.id}
                   type="button"
@@ -174,7 +188,58 @@ function JoinScreen({ onJoin, socketConnected }) {
                 </button>
               ))}
             </div>
+            <button
+              type="button"
+              className="expand-avatars-btn"
+              onClick={() => setShowAllAvatars((v) => !v)}
+            >
+              {showAllAvatars ? 'Show less' : 'Show more avatars'}
+            </button>
           </div>
+
+          {mode === 'create' && (
+            <div className="form-group advanced-section">
+              <button
+                type="button"
+                className="advanced-toggle"
+                onClick={() => setShowAdvanced((v) => !v)}
+                aria-expanded={showAdvanced}
+              >
+                Advanced {showAdvanced ? '▼' : '▶'}
+              </button>
+              {showAdvanced && (
+                <div className="advanced-content">
+                  <label htmlFor="scale">Voting scale</label>
+                  <select
+                    id="scale"
+                    value={scalePreset}
+                    onChange={(e) => {
+                      setScalePreset(e.target.value);
+                      setError('');
+                    }}
+                    className="scale-select"
+                  >
+                    <option value={SCALE_DEFAULT}>Default (0.5, 1, 1.5, 2, … 20, ?)</option>
+                    <option value={SCALE_FIBONACCI}>Fibonacci (1, 2, 3, 5, 8, 13, 21, ?)</option>
+                    <option value={SCALE_CUSTOM}>Custom</option>
+                  </select>
+                  {scalePreset === SCALE_CUSTOM && (
+                    <input
+                      type="text"
+                      className="scale-custom-input"
+                      value={scaleCustom}
+                      onChange={(e) => {
+                        setScaleCustom(e.target.value);
+                        setError('');
+                      }}
+                      placeholder="e.g. 1, 2, 3, 5, 8, 13"
+                      maxLength={80}
+                    />
+                  )}
+                </div>
+              )}
+            </div>
+          )}
 
           {error && <div className="error-message">{error}</div>}
 
