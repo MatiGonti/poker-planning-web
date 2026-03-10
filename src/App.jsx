@@ -21,6 +21,7 @@ function App() {
   const [votingOptions, setVotingOptions] = useState(null);
   const [votingRoundKey, setVotingRoundKey] = useState(0);
   const [gameLog, setGameLog] = useState([]);
+  const [joinError, setJoinError] = useState(null);
 
   useEffect(() => {
     console.log('Initializing socket...');
@@ -87,7 +88,7 @@ function App() {
       setCurrentUser(null);
       setGameCode(null);
       setGameDisplayName(null);
-      alert(message || 'Could not join game.');
+      setJoinError(message || 'Could not join game.');
     });
 
     newSocket.on('game-closed', ({ message }) => {
@@ -185,7 +186,14 @@ function App() {
   };
 
   if (!joined) {
-    return <JoinScreen onJoin={handleJoin} socketConnected={connectionOk} />;
+    return (
+      <JoinScreen
+        onJoin={handleJoin}
+        socketConnected={connectionOk}
+        serverError={joinError}
+        onClearServerError={() => setJoinError(null)}
+      />
+    );
   }
 
   return (

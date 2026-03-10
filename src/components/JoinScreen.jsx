@@ -54,7 +54,7 @@ const SCALE_DEFAULT = 'default';
 const SCALE_FIBONACCI = 'fibonacci';
 const SCALE_CUSTOM = 'custom';
 
-function JoinScreen({ onJoin, socketConnected }) {
+function JoinScreen({ onJoin, socketConnected, serverError, onClearServerError }) {
   const [mode, setMode] = useState('join'); // 'join' | 'create'
   const [gameCode, setGameCode] = useState('');
   const [name, setName] = useState('');
@@ -95,6 +95,7 @@ function JoinScreen({ onJoin, socketConnected }) {
           ? scaleCustom.trim()
           : scalePreset
         : undefined;
+    onClearServerError?.();
     onJoin(name.trim(), selectedAvatar, codeForJoin, scaleForCreate);
   };
 
@@ -115,6 +116,7 @@ function JoinScreen({ onJoin, socketConnected }) {
             onClick={() => {
               setMode('join');
               setError('');
+              onClearServerError?.();
             }}
           >
             Join game
@@ -125,6 +127,7 @@ function JoinScreen({ onJoin, socketConnected }) {
             onClick={() => {
               setMode('create');
               setError('');
+              onClearServerError?.();
             }}
           >
             Create new game
@@ -142,6 +145,7 @@ function JoinScreen({ onJoin, socketConnected }) {
                 onChange={(e) => {
                   setGameCode(e.target.value);
                   setError('');
+                  onClearServerError?.();
                 }}
                 placeholder="e.g. second-breakfast"
                 maxLength={40}
@@ -168,6 +172,22 @@ function JoinScreen({ onJoin, socketConnected }) {
 
           <div className="form-group avatar-form-group">
             <label>Choose your avatar</label>
+            {selectedAvatar ? (
+              <div className="avatar-preview-section">
+                <div className="avatar-preview">
+                  <img
+                    src={getAvatarImageUrl(selectedAvatar)}
+                    alt={selectedAvatar.name}
+                    className="preview-avatar"
+                  />
+                  <span className="preview-label">{selectedAvatar.name}</span>
+                </div>
+              </div>
+            ) : (
+              <div className="avatar-preview-section avatar-preview-section--empty">
+                <span className="preview-placeholder">Pick an avatar below</span>
+              </div>
+            )}
             <div className={`avatar-grid ${showAllAvatars ? 'avatar-grid--full' : 'avatar-grid--compact'}`}>
               {(showAllAvatars ? AVATARS : defaultAvatars).map((avatar) => (
                 <button
@@ -241,7 +261,11 @@ function JoinScreen({ onJoin, socketConnected }) {
             </div>
           )}
 
-          {error && <div className="error-message">{error}</div>}
+          {(serverError || error) && (
+            <div className={`error-message ${serverError ? 'error-message--server' : ''}`}>
+              {serverError || error}
+            </div>
+          )}
 
           <div className="connection-status">
             {socketConnected ? (

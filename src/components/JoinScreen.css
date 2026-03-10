@@ -290,6 +290,12 @@
   border: 2px dashed #D4C5B9;
 }
 
+.avatar-preview-section--empty .preview-placeholder {
+  font-size: 0.95rem;
+  color: #8B7355;
+  font-style: italic;
+}
+
 .avatar-preview {
   display: flex;
   flex-direction: column;
@@ -364,11 +370,17 @@
 .error-message {
   background: #FEF2F2;
   color: #7C2D12;
-  padding: 14px 16px;
-  border-radius: 8px;
+  padding: 20px 24px;
+  border-radius: 10px;
   text-align: center;
-  border-left: 4px solid #B91C1C;
+  border-left: 6px solid #B91C1C;
   font-weight: 600;
+  font-size: 1.05rem;
+  line-height: 1.4;
+  min-height: 52px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .connection-status {

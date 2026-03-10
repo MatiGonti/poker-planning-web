@@ -311,10 +311,11 @@ function GameScreen({
                   {entry.type === 'joined' && <><span className="game-log-name">{entry.name}</span> joined</>}
                   {entry.type === 'left' && <><span className="game-log-name">{entry.name}</span> left</>}
                   {entry.type === 'voted' && <><span className="game-log-name">{entry.name}</span> voted</>}
+                  {entry.type === 'retracted-vote' && <><span className="game-log-name">{entry.name}</span> revoked vote</>}
                   {entry.type === 'revealed-results' && <><span className="game-log-name">{entry.name}</span> showed results</>}
                   {entry.type === 'cleared-results' && <><span className="game-log-name">{entry.name}</span> cleared results</>}
                   {entry.type === 'started-voting' && <><span className="game-log-name">{entry.name}</span> started voting: {entry.taskName || '—'}</>}
-                  {!['joined', 'left', 'voted', 'revealed-results', 'cleared-results', 'started-voting'].includes(entry.type) && (
+                  {!['joined', 'left', 'voted', 'retracted-vote', 'revealed-results', 'cleared-results', 'started-voting'].includes(entry.type) && (
                     <><span className="game-log-name">{entry.name}</span>: {entry.type}</>
                   )}
                 </div>
