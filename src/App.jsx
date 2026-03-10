@@ -44,7 +44,7 @@ function App() {
       setSocketConnected(false);
     });
 
-    // Health check every 5s so we detect when backend is down even if socket still thinks it's connected
+    // Health check every 5s: HTTP reachability + sync actual socket state (so we don't rely only on connect/disconnect events)
     const checkHealth = async () => {
       try {
         const res = await fetch(`${getBackendUrl()}/health`, { method: 'GET' });
@@ -52,6 +52,7 @@ function App() {
       } catch {
         setServerHealthy(false);
       }
+      setSocketConnected(newSocket.connected);
     };
     checkHealth();
     const healthInterval = setInterval(checkHealth, HEALTH_CHECK_INTERVAL_MS);
